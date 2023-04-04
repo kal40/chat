@@ -6,6 +6,7 @@ import {
   Pressable,
   TextInput,
   ImageBackground,
+  ScrollView,
 } from "react-native";
 
 import SVGIcon from "../assets/icon.svg";
@@ -109,10 +110,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   titleWrapper: {
-    flex: 56,
+    flex: 1,
     justifyContent: "center",
     alignItems: "center",
     width: "100%",
+    height: "auto",
   },
   title: {
     fontSize: 45,
@@ -128,7 +130,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   formWrapper: {
-    flex: 44,
+    // flex: 1,
     justifyContent: "space-between",
     width: "88%",
     marginBottom: 30,
@@ -146,6 +148,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     height: 60,
+    marginBottom: 20,
   },
   inputSection: {
     flexDirection: "row",
@@ -156,6 +159,7 @@ const styles = StyleSheet.create({
     borderColor: "#757083",
     height: 60,
     borderRadius: 5,
+    marginBottom: 20,
   },
   icon: {
     padding: 12,
