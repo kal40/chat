@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -6,8 +6,9 @@ import {
   Pressable,
   TextInput,
   ImageBackground,
-  ScrollView,
+  Alert,
 } from "react-native";
+import { getAuth, onAuthStateChanged, signInAnonymously } from "firebase/auth";
 
 import SVGIcon from "../assets/icon.svg";
 
@@ -19,9 +20,41 @@ const COLOR_3 = "#8A95A5";
 const COLOR_4 = "#B9C6AE";
 const BASE_FONT = "Poppins";
 
-const Start = ({ navigation }) => {
+const Welcome = ({ navigation }) => {
+  const auth = getAuth();
   const [name, setName] = useState("");
   const [backgroundColor, setBackgroundColor] = useState(COLOR_1);
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        navigation.navigate("Chat", {
+          uid: user.uid,
+          name: name,
+          backgroundColor: backgroundColor,
+        });
+      }
+    });
+  }, []);
+
+  const signInUser = () => {
+    if (name.length < 3) {
+      Alert.alert("Please enter a name with at least 3 characters");
+      return;
+    }
+    signInAnonymously(auth)
+      .then((result) => {
+        navigation.navigate("Chat", {
+          uid: result.user.uid,
+          name: name,
+          backgroundColor: backgroundColor,
+        });
+        Alert.alert("Signed in Successfully!");
+      })
+      .catch((error) => {
+        Alert.alert("Unable to sign in, try later again.");
+      });
+  };
 
   return (
     <ImageBackground
@@ -40,6 +73,7 @@ const Start = ({ navigation }) => {
             value={name}
             onChangeText={setName}
             placeholder="Your Name"
+            textContentType="username"
           />
         </View>
         <View>
@@ -83,15 +117,7 @@ const Start = ({ navigation }) => {
             </Pressable>
           </View>
         </View>
-        <Pressable
-          onPress={() =>
-            navigation.navigate("Chat", {
-              name: name,
-              backgroundColor: backgroundColor,
-            })
-          }
-          style={styles.btn}
-        >
+        <Pressable onPress={signInUser} style={styles.btn}>
           <Text style={styles.btnText}>Start Chatting</Text>
         </Pressable>
       </View>
@@ -224,4 +250,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Start;
+export default Welcome;
