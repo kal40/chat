@@ -25,17 +25,17 @@ const Welcome = ({ navigation }) => {
   const [name, setName] = useState("");
   const [backgroundColor, setBackgroundColor] = useState(COLOR_1);
 
-  useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        navigation.navigate("Chat", {
-          uid: user.uid,
-          name: name,
-          backgroundColor: backgroundColor,
-        });
-      }
-    });
-  }, []);
+  // useEffect(() => {
+  //   onAuthStateChanged(auth, (user) => {
+  //     if (user) {
+  //       navigation.navigate("Chat", {
+  //         uid: user.uid,
+  //         name: name,
+  //         backgroundColor: backgroundColor,
+  //       });
+  //     }
+  //   });
+  // }, []);
 
   const signInUser = () => {
     if (name.length < 3) {
