@@ -60,6 +60,10 @@ const Chat = ({ db, isConnected, navigation, route }) => {
     setMessages(JSON.parse(cachedMessages));
   };
 
+  const deleteCachedMessages = async () => {
+    await AsyncStorage.removeItem("messages");
+  };
+
   const addMessage = async (newMessages) => {
     const newMessageRef = await addDoc(
       collection(db, "messages"),
