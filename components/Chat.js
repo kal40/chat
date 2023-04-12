@@ -1,5 +1,12 @@
 import { useEffect, useState } from "react";
-import { StyleSheet, KeyboardAvoidingView, Platform, View } from "react-native";
+import {
+  Alert,
+  StyleSheet,
+  KeyboardAvoidingView,
+  Linking,
+  Platform,
+  View,
+} from "react-native";
 import { Bubble, GiftedChat, InputToolbar } from "react-native-gifted-chat";
 import {
   addDoc,
@@ -9,8 +16,10 @@ import {
   query,
 } from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import MapView from "react-native-maps";
+import CustomActions from "./CustomActions";
 
-const Chat = ({ db, isConnected, navigation, route }) => {
+const Chat = ({ db, isConnected, navigation, route, storage }) => {
   const { uid, name, backgroundColor } = route.params;
   const [messages, setMessages] = useState([]);
 
@@ -95,16 +104,48 @@ const Chat = ({ db, isConnected, navigation, route }) => {
     else return null;
   };
 
+  const renderCustomActions = (props) => {
+    return <CustomActions storage={storage} uid={uid} {...props} />;
+  };
+
+  const renderCustomView = (props) => {
+    const { currentMessage } = props;
+    if (currentMessage.location) {
+      return (
+        <MapView
+          style={{ width: 150, height: 100, borderRadius: 13, margin: 3 }}
+          provider="google"
+          region={{
+            latitude: currentMessage.location.latitude,
+            longitude: currentMessage.location.longitude,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          }}
+          onPress={() => {
+            if (Platform.OS === "android") {
+              Linking.openURL(
+                `geo:${currentMessage.location.latitude}, ${currentMessage.location.longitude}`
+              );
+            }
+          }}
+        />
+      );
+    }
+    return null;
+  };
+
   return (
     <View style={styles.container(backgroundColor)}>
       <GiftedChat
         messages={messages}
         renderBubble={renderBubble}
         renderInputToolbar={renderInputToolbar}
-        onSend={addMessage}
+        onSend={(messages) => addMessage(messages)}
+        renderActions={renderCustomActions}
+        renderCustomView={renderCustomView}
         user={{
           _id: uid,
-          name: name,
+          name,
         }}
       />
       {Platform.OS === "android" && <KeyboardAvoidingView behavior="height" />}
