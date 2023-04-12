@@ -112,23 +112,25 @@ const Chat = ({ db, isConnected, navigation, route, storage }) => {
     const { currentMessage } = props;
     if (currentMessage.location) {
       return (
-        <MapView
-          style={{ width: 150, height: 100, borderRadius: 13, margin: 3 }}
-          provider="google"
-          region={{
-            latitude: currentMessage.location.latitude,
-            longitude: currentMessage.location.longitude,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-          }}
-          onPress={() => {
-            if (Platform.OS === "android") {
-              Linking.openURL(
-                `geo:${currentMessage.location.latitude}, ${currentMessage.location.longitude}`
-              );
-            }
-          }}
-        />
+        <View style={{ borderRadius: 13, margin: 3 }}>
+          <MapView
+            style={{ width: 150, height: 100, borderRadius: 13, margin: 3 }}
+            provider="google"
+            region={{
+              latitude: currentMessage.location.latitude,
+              longitude: currentMessage.location.longitude,
+              latitudeDelta: 0.0922,
+              longitudeDelta: 0.0421,
+            }}
+            onPress={() => {
+              if (Platform.OS === "android") {
+                Linking.openURL(
+                  `geo:${currentMessage.location.latitude}, ${currentMessage.location.longitude}`
+                );
+              }
+            }}
+          />
+        </View>
       );
     }
     return null;
